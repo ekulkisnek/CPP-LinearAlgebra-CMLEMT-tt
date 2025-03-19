@@ -1,0 +1,33 @@
+modules = ["cpp"]
+
+[nix]
+channel = "stable-24_05"
+
+[workflows]
+runButton = "Project"
+
+[[workflows.workflow]]
+name = "Project"
+mode = "parallel"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "C++ Examples and Tests"
+
+[[workflows.workflow]]
+name = "C++ Examples and Tests"
+author = "agent"
+
+[workflows.workflow.metadata]
+agentRequireRestartOnSave = false
+
+[[workflows.workflow.tasks]]
+task = "packager.installForAll"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "g++ -std=c++17 examples/matrix_operations.cpp -o matrix_ops && g++ -std=c++17 examples/linear_transformations.cpp -o linear_trans && g++ -std=c++17 tests/matrix_test.cpp -o matrix_test -I/nix/store/*/include -L/nix/store/*/lib -lgtest -lgtest_main -pthread && ./matrix_ops && ./linear_trans && ./matrix_test"
+
+[deployment]
+run = ["sh", "-c", "g++ -std=c++17 examples/matrix_operations.cpp -o matrix_ops && g++ -std=c++17 examples/linear_transformations.cpp -o linear_trans && g++ -std=c++17 tests/matrix_test.cpp -o matrix_test -I/nix/store/*/include -L/nix/store/*/lib -lgtest -lgtest_main -pthread && ./matrix_ops && ./linear_trans && ./matrix_test"]
